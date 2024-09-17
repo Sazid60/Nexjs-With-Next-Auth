@@ -73,7 +73,5 @@ const users = [
     }
 ];
 
-export default users;
-
 
 export { handler as GET, handler as POST }
