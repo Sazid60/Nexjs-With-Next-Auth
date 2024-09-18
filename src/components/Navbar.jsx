@@ -1,5 +1,5 @@
 "use client";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,6 +12,10 @@ const Navbar = () => {
   console.log(session);
   const links = [
     {
+      title: "About",
+      path: "/about",
+    },
+    {
       title: "Posts",
       path: "/posts",
     },
@@ -20,32 +24,32 @@ const Navbar = () => {
       path: "/meals",
     },
     {
-      title: "Gallary",
-      path: "/gallary",
+      title: "Gallery",
+      path: "/gallery",
     },
     {
-      title: "About",
-      path: "/about",
+      title: "Dashboard",
+      path: "/dashboard",
     },
   ];
+
   const handler = () => {
     router.push("/api/auth/signin");
   };
 
-  if (pathName.includes("dashboard"))
-    return (
-      <div className="bg-green-400 p-6">
-        <h1>Dashboard Layout</h1>
-      </div>
-    );
+  // if (pathName.includes("dashboard"))
+  //   return <div className="bg-blue-400">Dashboard Layout</div>;
   return (
-    <nav className="bg-red-500 px-6 py-4 flex justify-between items-center">
-      <h6 className="text-white uppercase font-bold text-4xl">Next Hero</h6>
+    <nav className="bg-blue-500 px-6 py-4 flex justify-between items-center">
+      <h6 className="text-3xl">
+        <Link href={"/"}>
+          Next <span className="text-orange-300">Meal</span>
+        </Link>
+      </h6>
       <ul className="flex justify-between items-center space-x-4">
-        {/* <li><Link href={'/about'}>About</Link></li> */}
         {links?.map((link) => (
           <Link
-            className={`${pathName === link?.path && "text-cyan-400"}`}
+            className={`${pathName === link.path && "text-cyan-300"}`}
             key={link.path}
             href={link.path}
           >
@@ -53,28 +57,41 @@ const Navbar = () => {
           </Link>
         ))}
       </ul>
-      {session?.status !== "authenticated" ?
-        <button onClick={handler} className="p-3 bg-white">
-          Login
-        </button>
-        :
-        <button className="p-3 bg-yellow-500">Logout</button>
-      }
-      <div className="flex justify-center items-center">
-        {session?.data && (
-          <div className="rounded-full mr-3 overflow-hidden size-12">
-            <Image
-              height={70}
-              width={70}
-              alt={session?.data?.user?.name}
-              src={session?.data?.user?.image}
-            />
+      <div>
+        <div className="flex items-center space-x-3">
+          <div>
+            <h5>{session?.data?.user?.name}</h5>
+            <h6>{session?.data?.user?.type}</h6>
           </div>
-        )}
-        <h6>
-          {session?.data?.user?.name} <br />
-          {session?.data?.user?.type}
-        </h6>
+          {session?.data && (
+            <div className="rounded-full mr-3 overflow-hidden size-12">
+              <Image
+                height={50}
+                width={50}
+                alt={session?.data?.user?.name}
+                src={session?.data?.user?.image}
+              />
+            </div>
+          )}
+
+          <div>
+            {session.status !== "authenticated" ? (
+              <button
+                onClick={handler}
+                className="bg-white text-orange-600 font-semibold px-6 py-3 hover:bg-slate-300"
+              >
+                Login
+              </button>
+            ) : (
+              <button
+                onClick={() => signOut()}
+                className="bg-white text-orange-600 font-semibold px-6 py-3 hover:bg-slate-300"
+              >
+                Logout
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     </nav>
   );

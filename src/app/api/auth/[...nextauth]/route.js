@@ -41,6 +41,7 @@ export const authOptions = {
         })
     ],
 
+    // session e only email and usr name dye so, session e type and other info add korte eta kora lagbe 
     callbacks: {
         async session({ session, token }) {
             session.user.type = token.type
