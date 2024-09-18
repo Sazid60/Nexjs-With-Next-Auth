@@ -4,7 +4,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 export const authOptions = {
     secret: process.env.NEXT_PUBLIC_AUTH_SECRET,
     session: {
-        strategy: "jwt"
+        strategy: "jwt",
+        maxAge: 30 * 24 * 60 * 60, // 30 days
     },
     providers: [
         CredentialsProvider({
@@ -38,7 +39,21 @@ export const authOptions = {
                 return null
             }
         })
-    ]
+    ],
+
+    callbacks: {
+        async session({ session, token }) {
+            session.user.type = token.type
+            return session
+        },
+        async jwt({ token, account, user }) {
+            // Persist the OAuth access_token and or the user id to the token right after signin
+            if (account) {
+                token.type = user.type
+            }
+            return token
+        }
+    }
 }
 const handler = NextAuth(authOptions)
 
@@ -47,31 +62,41 @@ const users = [
         id: 1,
         name: 'John Doe',
         email: 'john.doe@example.com',
-        password: 'password123'
+        type: 'admin',
+        password: 'password123',
+        image: 'https://picsum.photos/200/300'
     },
     {
         id: 2,
         name: 'Jane Smith',
         email: 'jane.smith@example.com',
-        password: 'securepassword'
+        type: 'moderator',
+        password: 'securepassword',
+        image: 'https://picsum.photos/200/300'
     },
     {
         id: 3,
         name: 'Alice Johnson',
         email: 'alice.johnson@example.com',
-        password: 'alicepass789'
+        type: 'member',
+        password: 'alicepass789',
+        image: 'https://picsum.photos/200/300'
     },
     {
         id: 4,
         name: 'Bob Williams',
         email: 'bob.williams@example.com',
-        password: 'bobspassword'
+        type: 'member',
+        password: 'bobspassword',
+        image: 'https://picsum.photos/200/300'
     },
     {
         id: 5,
         name: 'Charlie Brown',
         email: 'charlie.brown@example.com',
-        password: 'charliepass2024'
+        type: 'member',
+        password: 'charliepass2024',
+        image: 'https://picsum.photos/200/300'
     }
 ];
 
