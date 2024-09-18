@@ -52,13 +52,13 @@ const Navbar = () => {
           </Link>
         ))}
       </ul>
-      {session.status !== "authenticated" ? 
+      {session?.status !== "authenticated" ?
         <button onClick={handler} className="p-3 bg-white">
           Login
         </button>
-      : 
+        :
         <button className="p-3 bg-yellow-500">Logout</button>
-    }
+      }
     </nav>
   );
 };

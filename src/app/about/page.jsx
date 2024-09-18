@@ -1,4 +1,6 @@
+import { getServerSession } from 'next-auth';
 import React from 'react';
+import { authOptions } from '../api/auth/[...nextauth]/route';
 
 const getTime = async () => {
     // Cache the na diye updated ta dibe proti refresh e notun data dibe mane network request korbe 
@@ -13,6 +15,8 @@ const getTime = async () => {
 }
 
 const page = async () => {
+    const session = await getServerSession(authOptions)
+    console.log({session})
     const currentTime = await getTime();
     console.log(currentTime)
 
